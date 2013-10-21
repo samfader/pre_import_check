@@ -47,7 +47,14 @@ This will depend on 3 factors:
 2. The number of errors
 3. The processing power of your computer
 
-Here are some examples: It took 1 min and 40s to check a 7.8mb folder with that 4116+ errors. While an 8.7mb folder took 1min and 7s and a 635kb folder with 15 errors took only 13 seconds.
+Here are some examples:
+
+| Size | Errors | Time |
+| ---- | ------ | ---- |
+| 7.8 MB | 4000+ | 1 min, 40 sec |
+| 8.7 MB | 0 | 7 sec |
+| 635 KB | 15 | 13 sec |
+
 ###Tips###
 1. You can copy the output from PreCheck and email it to a customer so that they can check on warnings such as duplicate import_ids, etc.
 2. This program is intended to aid in quickly finding possible import issues, it is not meant to replace opening up the file and actually looking at the data. I do however run the PreCheck currently to give me a quick view of where I should start searching.
