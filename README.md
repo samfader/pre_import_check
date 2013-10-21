@@ -52,7 +52,7 @@ Here are some examples:
 | Size | Errors | Time |
 | ---- | ------ | ---- |
 | 7.8 MB | 4000+ | 1 min, 40 sec |
-| 8.7 MB | 0 | 7 sec |
+| 8.7 MB | 52+ | 1 min, 7 sec |
 | 635 KB | 15 | 13 sec |
 
 ###Tips###
@@ -74,7 +74,7 @@ I realize that using `` `rescue => er` `` will prevent the use of CTRL + C but I
 
 ##IV. About Pre_Check.rb##
 ###Why was it made?###
-The import issues I see are too common to be looking for a needle in a small haystack. I would rather just have a program do all the work.
+This is an unoffical Haiku Learning program to check imports according to Haiku Learning's specifications. The import issues I see are too common to be looking for a needle in a small haystack. I would rather just have a program do all the work.
 ###What does it do?###
 *	displays contents of folder, so it is easy to see if file names were not spelled correctly
 
