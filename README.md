@@ -15,7 +15,7 @@ PreCheck v00.01
 	*	What does it do?
 	*	What's with the colors?
 	*	Suggestions/Fixes/etc.
-*   [V. Next release](#next_release)  
+*   V. Next release
 	*	When can I expect the next release?
 	*	What is being planned for next release?
 
@@ -129,7 +129,7 @@ Please feel free to email all suggestions, fixes, etc. to me and I will do my be
 ###When can I expect the next release?###
 As soon as I submit this to github tomorrow I will already be working on the next release. I will not stop until this program can flag almost every known import issue.
 
-<h2 id"next_release">What is being planned for next release?</h2>
+###What is being planned for next release?###
 Honestly this will depend on need and feedback however the following are what I plan on adding:  
 
 *	better documentation - I ran out of time for this first release but hope to comment better next version
