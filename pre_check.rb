@@ -14,9 +14,7 @@ PreCheckUtils.check_directory_contents_and_encoding(@import_directory_path)
 # PreCheckUtils.partial_import_switch_check(@import_directory_path, @partial_import_switch)
 partial_file_name_match = 0
 Dir.foreach("#{@import_directory_path}") do |x|
-  if x.include?("update_") || x.include?("delete_")
-    partial_file_name_match += 1
-  end
+  partial_file_name_match += 1 if x.include?("update_") || x.include?("delete_")
 end
 if partial_file_name_match > 0
   @partial_import_switch = "update_"
@@ -38,10 +36,8 @@ import_column_collection = {"users.csv" =>USERS_COLUMNS, "classes.csv" => CLASSE
 
 csv_file_name_and_expected_column_count = {"users.csv" => 14, "classes.csv" => 8, "roster.csv" => 3, "organizations.csv" => 3, "users_levels.csv" => 2, "parent_child.csv" => 2}
 csv_file_name_and_expected_column_count.each do |file, col|
-  if @partial_import_switch == "update_"  
-    file = "update_#{file}"
-  else
-  end
+  
+  file = "update_#{file}" if @partial_import_switch == "update_"  
 
   puts "======================== #{file} ========================"
   if File.zero?("#{@import_directory_path}/#{file}")

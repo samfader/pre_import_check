@@ -32,9 +32,7 @@ class PreCheckUtils
   # method to check if files partial files, if so run as a partial import and not as a full import 
   def self.partial_import_switch_check(import_dir,partial_import_switch)
     Dir.foreach("#{import_dir}") do |x|
-      if x.include?("update_") || x.include?("delete_")
-        partial_file_name_match += 1
-      end
+      partial_file_name_match += 1 if x.include?("update_") || x.include?("delete_")
     end
     if partial_file_name_match > 0
       partial_import_switch = "update_"
@@ -394,18 +392,10 @@ class PreCheckUtils
         user_row_num += 1
     end
     puts ""    
-    if login_does_not_start_with_and_or_contain > 0
-    puts "#{login_does_not_start_with_and_or_contain} username(s) do not start with and/or contain letters, numbers, underscores, dots or dashes."
-    end
-    if password_does_not_start_with_and_or_contain > 0
-    puts "#{password_does_not_start_with_and_or_contain} password(s) do not start with and/or contain letters, numbers, underscores, dots or dashes."
-    end
-    if login_length_does_not_fall_within_min_max > 0
-    puts "#{login_length_does_not_fall_within_min_max} username(s) are either less than 3 characters or greater than 68 characters in length."
-    end
-    if password_length_does_not_fall_within_min_max > 0
-      puts "#{password_length_does_not_fall_within_min_max} password(s) are either less than 6 characters or greater than 40 characters in length."  
-    end
+    puts "#{login_does_not_start_with_and_or_contain} username(s) do not start with and/or contain letters, numbers, underscores, dots or dashes." if login_does_not_start_with_and_or_contain > 0
+    puts "#{password_does_not_start_with_and_or_contain} password(s) do not start with and/or contain letters, numbers, underscores, dots or dashes." if password_does_not_start_with_and_or_contain > 0
+    puts "#{login_length_does_not_fall_within_min_max} username(s) are either less than 3 characters or greater than 68 characters in length." if login_length_does_not_fall_within_min_max > 0
+    puts "#{password_length_does_not_fall_within_min_max} password(s) are either less than 6 characters or greater than 40 characters in length." if password_length_does_not_fall_within_min_max > 0
     if login_contains_space_and_or_apostrophe > 0
        puts ""
        puts "#{login_contains_space_and_or_apostrophe} logins that contain a space or apostrophe."
