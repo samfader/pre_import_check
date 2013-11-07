@@ -428,7 +428,8 @@ class PreCheckUtils
         x = CSV.parse(x)
         
         org_import_ids[x[0][0]] = true
-        unique_import_ids_from_organizations_csv += "#{x[0][0]}, ".pink
+        #changed from += to <<, which is better, does it matter?
+        unique_import_ids_from_organizations_csv << "#{x[0][0]}, ".pink
         number_of_import_ids_from_organizations_csv += 1
       end
 
@@ -482,7 +483,7 @@ class PreCheckUtils
         x = CSV.parse(x)
         
         org_import_ids[x[0][0]] = true
-        unique_import_ids_from_organizations_csv += "#{x[0][0]}, ".pink
+        unique_import_ids_from_organizations_csv << "#{x[0][0]}, ".blue
         number_of_import_ids_from_organizations_csv += 1
       end
 
@@ -515,7 +516,40 @@ class PreCheckUtils
       puts ""
       puts "Oops! Something went wrong for method report_classes_csv_organization_id_with_import_id_in_organizations_csv: #{er.message}".red
   end
+  def self.user_type_count_by_category_for_users_csv(import_dir, partial_import_switch)
+    if File.exists?("#{import_dir}/#{partial_import_switch}users.csv")
+      user_type_teacher = 0
+      user_type_student = 0
+      user_type_parent = 0
+      not_valid_user_type = 0
+      row_count = 0
+  
+      File.foreach("#{import_dir}/#{partial_import_switch}users.csv") do |x|
+        x = CSV.parse(x)
+        row_count += 1
+        user_type_value = x[0][9]
+        if user_type_value.nil? || user_type_value.empty?
+          user_type_student += 1
+        elsif user_type_value.downcase == "t"
+          user_type_teacher += 1
+        elsif user_type_value.downcase == "s"
+          user_type_student += 1
+        elsif user_type_value.downcase == "p"
+          user_type_parent += 1
+        else
+          not_valid_user_type += 1
+        end
+      end
+      puts ""
+      puts "User type summary from users.csv".green
+      printf("%-10s | %13s | %13s | %13s | %11s\n", "# of rows", "# of teachers", "# of students", "# of parents", "# not valid ")
+      printf("%-10s | %13s | %13s | %13s | %11s\n".bold.reverse_color, row_count-1, user_type_teacher, user_type_student, user_type_parent, not_valid_user_type-1) 
+    end
+  end
+
+
 end
+
 
 
 class String

@@ -57,6 +57,7 @@ csv_file_name_and_expected_column_count.each do |file, col|
         PreCheckUtils.google_second_domain_check(@import_directory_path, file, @google_domain1)
         @return_users_duplicate_import_id_report =  PreCheckUtils.duplicate_import_id_in_users_and_classes_csv(file,@import_directory_path)
         PreCheckUtils.users_csv_login_and_password_issue_check(file,@import_directory_path)
+        PreCheckUtils.user_type_count_by_category_for_users_csv(@import_directory_path,@partial_import_switch)
         PreCheckUtils.report_users_csv_organization_id_with_import_id_in_organizations_csv(@import_directory_path,@partial_import_switch)
         puts " "  
       when "#{@partial_import_switch}classes.csv"
