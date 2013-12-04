@@ -334,6 +334,7 @@ class PreCheckUtils
         puts ""
         puts "No duplicate import_ids found".bold
       end
+      puts "#{duplicate_import_id_nil_or_empty} import_ids are nil or empty".pink.bold if duplicate_import_id_nil_or_empty > 0
     end
     return return_duplicate_import_id_report
     # previously, I was writing a rescue clause like this `rescue  CSV::MalformedCSVError, Encoding::InvalidByteSequenceError => er` but didn't want to have to keep adding to an exception list. In my opinion better to just catch all and not have the ability to `CTRL + C` than have the PreCheck for every exception not accounted for.
