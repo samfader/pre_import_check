@@ -547,7 +547,26 @@ class PreCheckUtils
       printf("%-10s | %13s | %13s | %13s | %11s\n".bold.reverse_color, row_count-1, user_type_teacher, user_type_student, user_type_parent, not_valid_user_type-1) 
     end
   end
-
+  def self.google_id_domain_split_list(import_dir, partial_import_switch)
+    if File.exists?("#{import_dir}/#{partial_import_switch}users.csv")
+      unique_domain_split = {}
+      domain_split_results = "The following are different domains being passed in the google_id column: \n"
+      domain_split = CSV.read("#{import_dir}/#{partial_import_switch}users.csv")
+      user_row_num = 1
+      while user_row_num <= domain_split.size-1
+        if domain_split[user_row_num][13].nil? || domain_split[user_row_num][13].empty?
+        else
+          unique_domain_split[domain_split[user_row_num][13].split('@').last] = true
+        end 
+          user_row_num += 1
+      end
+      unique_domain_split.each do |x, y|
+        domain_split_results += "#{x.pink}, "
+      end
+      puts ""
+      puts domain_split_results
+    end
+  end
 
 end
 

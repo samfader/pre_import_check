@@ -53,6 +53,7 @@ csv_file_name_and_expected_column_count.each do |file, col|
   
     case file
       when "#{@partial_import_switch}users.csv"
+        PreCheckUtils.google_id_domain_split_list(@import_directory_path,@partial_import_switch)
         PreCheckUtils.google_domain_check(@import_directory_path, file, @google_domain)
         PreCheckUtils.google_second_domain_check(@import_directory_path, file, @google_domain1)
         PreCheckUtils.user_type_count_by_category_for_users_csv(@import_directory_path,@partial_import_switch)
@@ -83,3 +84,10 @@ csv_file_name_and_expected_column_count.each do |file, col|
    end
 end
 
+#######TESTING############
+
+# can leave the arg as file because it will only be called with either users.csv or update_users.csv according to case
+
+#######END OF TESTING#######
+
+ 
