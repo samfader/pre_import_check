@@ -84,10 +84,5 @@ csv_file_name_and_expected_column_count.each do |file, col|
    end
 end
 
-#######TESTING############
-
-# can leave the arg as file because it will only be called with either users.csv or update_users.csv according to case
-
-#######END OF TESTING#######
 
  
