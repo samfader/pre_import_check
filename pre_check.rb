@@ -9,6 +9,7 @@ load 'pre_check_utils.rb'
 @google_domain1 = ARGV[2].to_s
 PreCheckUtils.check_directory_contents_and_encoding(@import_directory_path)
 
+@health_check = 0
 # was unable to finish making the code below into a method
 # @partial_import_switch = ""
 # PreCheckUtils.partial_import_switch_check(@import_directory_path, @partial_import_switch)
