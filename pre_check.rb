@@ -9,7 +9,8 @@ load 'pre_check_utils.rb'
 @google_domain1 = ARGV[2].to_s
 PreCheckUtils.check_directory_contents_and_encoding(@import_directory_path)
 
-@health_check = 0
+PreCheckUtils.intialize_health_check
+
 # was unable to finish making the code below into a method
 # @partial_import_switch = ""
 # PreCheckUtils.partial_import_switch_check(@import_directory_path, @partial_import_switch)
@@ -35,11 +36,11 @@ ROSTER_COLUMNS = [:eclass_id, :user_id, :role]
 # used in compare_expected_column_titles_with_actual_from_csv method
 import_column_collection = {"users.csv" =>USERS_COLUMNS, "classes.csv" => CLASSES_COLUMNS, "roster.csv" => ROSTER_COLUMNS, "organizations.csv" => ORGANIZATIONS_COLUMNS, "users_levels.csv" => USERS_LEVELS_COLUMNS, "parent_child.csv" => PARENT_CHILD_COLUMNS,"update_users.csv" =>USERS_COLUMNS, "update_classes.csv" => CLASSES_COLUMNS, "update_roster.csv" => ROSTER_COLUMNS, "update_organizations.csv" => ORGANIZATIONS_COLUMNS, "update_users_levels.csv" => USERS_LEVELS_COLUMNS, "update_parent_child.csv" => PARENT_CHILD_COLUMNS }
 
-csv_file_name_and_expected_column_count = {"users.csv" => 14, "classes.csv" => 8, "roster.csv" => 3, "organizations.csv" => 3, "users_levels.csv" => 2, "parent_child.csv" => 2}
+csv_file_name_and_expected_column_count = {"users.csv" => 14, "classes.csv" => 8, "roster.csv" => 2, "organizations.csv" => 3, "users_levels.csv" => 2, "parent_child.csv" => 2}
 csv_file_name_and_expected_column_count.each do |file, col|
   
   file = "update_#{file}" if @partial_import_switch == "update_"  
-
+      
   puts "======================== #{file} ========================"
   if File.zero?("#{@import_directory_path}/#{file}")
     puts "#{file} is zero bytes...skipping!".red
@@ -51,7 +52,7 @@ csv_file_name_and_expected_column_count.each do |file, col|
     PreCheckUtils.count_number_of_columns_in_csv_file(file, col, @import_directory_path)
     PreCheckUtils.compare_expected_column_titles_with_actual_from_csv(file,import_column_collection[file],@import_directory_path)
     PreCheckUtils.count_number_of_rows_in_the_csv_file(file,@import_directory_path)
-  
+    
     case file
       when "#{@partial_import_switch}users.csv"
         PreCheckUtils.google_id_domain_split_list(@import_directory_path,@partial_import_switch)
@@ -85,5 +86,8 @@ csv_file_name_and_expected_column_count.each do |file, col|
    end
 end
 
+puts PreCheckUtils.health_check
+health_check_results =  10-PreCheckUtils.health_check
+puts " Import Health Status: #{health_check_results} ".bold.cyan.reverse_color
 
  

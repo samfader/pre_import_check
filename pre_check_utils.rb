@@ -1,5 +1,4 @@
 class PreCheckUtils
-
   # directory path, check if empty and contents
   def self.check_directory_contents_and_encoding(import_directory_path)
     # the code below will allow folder to be entered within terminal as arg[0]
@@ -43,6 +42,14 @@ class PreCheckUtils
     end
   end
   
+  #created this method to compute health check value since a paramater is just a reference and cannot update the original instance variable
+  def self.intialize_health_check
+    @health_check = 0
+  end
+  def self.health_check
+    @health_check
+  end
+  
   # counts the number of columns included in the file so that it can be used to compare against expected number of columns
   def self.count_number_of_columns_in_csv_file(file, col, import_dir)
     column_header = File.open("#{import_dir}/#{file}").first
@@ -57,6 +64,7 @@ class PreCheckUtils
     elsif column_count > col
       puts "You have more columns than expected, compare titles below.".cyan
     else
+      @health_check += 1
       puts "You have less columns than expected, compare titles below.".yellow
     end
     rescue => er
@@ -517,6 +525,8 @@ class PreCheckUtils
       puts ""
       puts "Oops! Something went wrong for method report_classes_csv_organization_id_with_import_id_in_organizations_csv: #{er.message}".red
   end
+  
+  #Displays 
   def self.user_type_count_by_category_for_users_csv(import_dir, partial_import_switch)
     if File.exists?("#{import_dir}/#{partial_import_switch}users.csv")
       user_type_teacher = 0
@@ -547,6 +557,8 @@ class PreCheckUtils
       printf("%-10s | %13s | %13s | %13s | %11s\n".bold.reverse_color, row_count-1, user_type_teacher, user_type_student, user_type_parent, not_valid_user_type-1) 
     end
   end
+  
+  #Display unique values after @ symbol to catch misspelled email address
   def self.google_id_domain_split_list(import_dir, partial_import_switch)
     if File.exists?("#{import_dir}/#{partial_import_switch}users.csv")
       unique_domain_split = {}
