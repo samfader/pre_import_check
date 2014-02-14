@@ -28,7 +28,8 @@ class PreCheckUtils
   end
   
   # unable to finish making the code below into a method
-  # method to check if files partial files, if so run as a partial import and not as a full import 
+  # method to check if files partial files, if so run as a partial import and not as a full import
+  #going to come back to this and fix it similar to health check variable 
   def self.partial_import_switch_check(import_dir,partial_import_switch)
     Dir.foreach("#{import_dir}") do |x|
       partial_file_name_match += 1 if x.include?("update_") || x.include?("delete_")
@@ -42,10 +43,12 @@ class PreCheckUtils
     end
   end
   
-  #created this method to compute health check value since a paramater is just a reference and cannot update the original instance variable
+  # created the 2 methods below to compute health check value since a paramater is just a reference and cannot update the original instance variable
+  # initializes the instance variable
   def self.intialize_health_check
     @health_check = 0
   end
+  # allows the value of instance variable to be outputed
   def self.health_check
     @health_check
   end
@@ -64,7 +67,11 @@ class PreCheckUtils
     elsif column_count > col
       puts "You have more columns than expected, compare titles below.".cyan
     else
-      @health_check += 1
+      
+      puts "HEALTH CHECK VALUE PRIOR = #{@health_check}".bold.red
+      @health_check += 10
+      puts "missing columns - NOW = #{@health_check}".bold.red
+      
       puts "You have less columns than expected, compare titles below.".yellow
     end
     rescue => er
@@ -124,8 +131,10 @@ class PreCheckUtils
           user_row_num += 1
       end
       puts ""
-       if google_id_match >0
-        # puts google_domain_report.green
+       if google_id_match == 0
+         puts "HEALTH CHECK VALUE PRIOR = #{@health_check}".bold.red
+         @health_check += 10
+         puts "1st google domain -  NOW = #{@health_check}".bold.red
        end
       puts "Information regarding Google Domain #{google_domain}".green
       printf("%-10s | %10s | %10s | %14s\n", "total #", "# matched", "# no match", "# nil or empty")
@@ -156,7 +165,10 @@ class PreCheckUtils
           user_row_num += 1
       end
       puts ""
-       if google_id_match >0
+       if google_id_match ==0
+         puts "HEALTH CHECK VALUE PRIOR = #{@health_check}".bold.red
+         @health_check += 10
+         puts "second google domain - NOW = #{@health_check}".bold.red
        end
       puts "Information regarding Google Domain #{google_domain1}".green
       printf("%-10s | %10s | %10s | %14s\n", "total #", "# matched", "# no match", "# nil or empty")
@@ -195,6 +207,9 @@ class PreCheckUtils
         end
       end
       if teacher_import_id_no_match > 1
+        puts "HEALTH CHECK VALUE PRIOR = #{@health_check}".bold.red
+        @health_check += 10
+        puts "class with no teacher - NOW = #{@health_check}".bold.red
         unique_class_teacher_id_not_found.each do | x, y|
           class_teacher_id_not_found_report += "#{x.pink}, "
         end
@@ -241,6 +256,9 @@ class PreCheckUtils
         end
       end
       if roster_class_id_no_match > 1
+        puts "HEALTH CHECK VALUE PRIOR = #{@health_check}".bold.red
+        @health_check += 5
+        puts "roster with no class - NOW = #{@health_check}".bold.red
         unique_roster_class_id_not_found.each do | x, y|
           roster_class_id_not_found_report += "#{x.pink}, "
         end
@@ -289,6 +307,9 @@ class PreCheckUtils
         end
       end
       if roster_user_id_no_match > 1 #value of 1 until I can figure out how to stop showing the column title
+        puts "HEALTH CHECK VALUE PRIOR = #{@health_check}".bold.red
+        @health_check += 5
+        puts "roster with no users - NOW = #{@health_check}".bold.red
         unique_roster_class_id_not_found.each do | x, y|
           roster_class_id_not_found_report += "#{x.pink}, "
         end
@@ -336,6 +357,9 @@ class PreCheckUtils
         end
       end 
       if duplicate_import_id_report_count > 1
+        puts "HEALTH CHECK VALUE PRIOR = #{@health_check}".bold.red
+        @health_check += 5
+        puts "duplicate import ids - NOW = #{@health_check}".bold.red
         return_duplicate_import_id_report += "#{duplicate_import_id_report_count} #{duplicate_import_id_report}"
         puts return_duplicate_import_id_report
       else
@@ -406,6 +430,9 @@ class PreCheckUtils
     puts "#{login_length_does_not_fall_within_min_max} username(s) are either less than 3 characters or greater than 68 characters in length." if login_length_does_not_fall_within_min_max > 0
     puts "#{password_length_does_not_fall_within_min_max} password(s) are either less than 6 characters or greater than 40 characters in length." if password_length_does_not_fall_within_min_max > 0
     if login_contains_space_and_or_apostrophe > 0
+       puts "HEALTH CHECK VALUE PRIOR = #{@health_check}".bold.red
+       @health_check += 10
+       puts "login space or apostrophe - NOW = #{@health_check}".bold.red
        puts ""
        puts "#{login_contains_space_and_or_apostrophe} logins that contain a space or apostrophe."
        puts users_csv_login_column_space_and_apostrophe_check_report
@@ -456,6 +483,11 @@ class PreCheckUtils
         end
       end
       if users_organization_id_no_match > 1
+        
+        puts "HEALTH CHECK VALUE PRIOR = #{@health_check}".bold.red
+        @health_check += 5
+        puts "users missing org id - NOW = #{@health_check}".bold.red
+        
         unique_users_organization_id_not_found.each do | x, y|
           users_organization_id_not_found_report += "#{x.pink}, "
         end
@@ -473,7 +505,7 @@ class PreCheckUtils
   end
   
   # compare organization id within classes.csv to import_id in the organiations.csv file to see if they all match
-  # I realize the code below is very similar to the method report_users_csv_organization_id_with_import_id_in_organizations_csv and maybe while using #{file} I could DRY this method up
+  # I realize the code below is very similar to the method report_users_csv_organization_id_with_import_id_in_organizations_csv and maybe while using #{file} I could DRY this code up and combine methods
   def self.report_classes_csv_organization_id_with_import_id_in_organizations_csv(import_dir,partial_import_switch)
     if File.exists?("#{import_dir}/#{partial_import_switch}classes.csv") && File.exists?("#{import_dir}/#{partial_import_switch}organizations.csv")
       classes_organization_id_match = 0
@@ -510,6 +542,9 @@ class PreCheckUtils
         end
       end
       if classes_organization_id_no_match > 1
+        puts "HEALTH CHECK VALUE PRIOR = #{@health_check}".bold.red
+        @health_check += 5
+        puts "classes missing org id - NOW = #{@health_check}".bold.red
         unique_classes_organization_id_not_found.each do | x, y|
           classes_organization_id_not_found_report += "#{x.pink}, "
         end
@@ -526,7 +561,7 @@ class PreCheckUtils
       puts "Oops! Something went wrong for method report_classes_csv_organization_id_with_import_id_in_organizations_csv: #{er.message}".red
   end
   
-  #Displays 
+  # displays the sum of users in each user type
   def self.user_type_count_by_category_for_users_csv(import_dir, partial_import_switch)
     if File.exists?("#{import_dir}/#{partial_import_switch}users.csv")
       user_type_teacher = 0
@@ -558,7 +593,7 @@ class PreCheckUtils
     end
   end
   
-  #Display unique values after @ symbol to catch misspelled email address
+  # display unique values after @ symbol to catch misspelled email addresses
   def self.google_id_domain_split_list(import_dir, partial_import_switch)
     if File.exists?("#{import_dir}/#{partial_import_switch}users.csv")
       unique_domain_split = {}

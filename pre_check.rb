@@ -87,7 +87,7 @@ csv_file_name_and_expected_column_count.each do |file, col|
 end
 
 puts PreCheckUtils.health_check
-health_check_results =  10-PreCheckUtils.health_check
+health_check_results =  100-PreCheckUtils.health_check
 puts " Import Health Status: #{health_check_results} ".bold.cyan.reverse_color
 
  
