@@ -67,11 +67,7 @@ class PreCheckUtils
     elsif column_count > col
       puts "You have more columns than expected, compare titles below.".cyan
     else
-      
-      puts "HEALTH CHECK VALUE PRIOR = #{@health_check}".bold.red
       @health_check += 10
-      puts "missing columns - NOW = #{@health_check}".bold.red
-      
       puts "You have less columns than expected, compare titles below.".yellow
     end
     rescue => er
@@ -132,9 +128,7 @@ class PreCheckUtils
       end
       puts ""
        if google_id_match == 0
-         puts "HEALTH CHECK VALUE PRIOR = #{@health_check}".bold.red
          @health_check += 10
-         puts "1st google domain -  NOW = #{@health_check}".bold.red
        end
       puts "Information regarding Google Domain #{google_domain}".green
       printf("%-10s | %10s | %10s | %14s\n", "total #", "# matched", "# no match", "# nil or empty")
@@ -166,9 +160,7 @@ class PreCheckUtils
       end
       puts ""
        if google_id_match ==0
-         puts "HEALTH CHECK VALUE PRIOR = #{@health_check}".bold.red
          @health_check += 10
-         puts "second google domain - NOW = #{@health_check}".bold.red
        end
       puts "Information regarding Google Domain #{google_domain1}".green
       printf("%-10s | %10s | %10s | %14s\n", "total #", "# matched", "# no match", "# nil or empty")
@@ -207,9 +199,7 @@ class PreCheckUtils
         end
       end
       if teacher_import_id_no_match > 1
-        puts "HEALTH CHECK VALUE PRIOR = #{@health_check}".bold.red
         @health_check += 10
-        puts "class with no teacher - NOW = #{@health_check}".bold.red
         unique_class_teacher_id_not_found.each do | x, y|
           class_teacher_id_not_found_report += "#{x.pink}, "
         end
@@ -256,9 +246,7 @@ class PreCheckUtils
         end
       end
       if roster_class_id_no_match > 1
-        puts "HEALTH CHECK VALUE PRIOR = #{@health_check}".bold.red
         @health_check += 5
-        puts "roster with no class - NOW = #{@health_check}".bold.red
         unique_roster_class_id_not_found.each do | x, y|
           roster_class_id_not_found_report += "#{x.pink}, "
         end
@@ -307,9 +295,7 @@ class PreCheckUtils
         end
       end
       if roster_user_id_no_match > 1 #value of 1 until I can figure out how to stop showing the column title
-        puts "HEALTH CHECK VALUE PRIOR = #{@health_check}".bold.red
         @health_check += 5
-        puts "roster with no users - NOW = #{@health_check}".bold.red
         unique_roster_class_id_not_found.each do | x, y|
           roster_class_id_not_found_report += "#{x.pink}, "
         end
@@ -357,9 +343,7 @@ class PreCheckUtils
         end
       end 
       if duplicate_import_id_report_count > 1
-        puts "HEALTH CHECK VALUE PRIOR = #{@health_check}".bold.red
         @health_check += 5
-        puts "duplicate import ids - NOW = #{@health_check}".bold.red
         return_duplicate_import_id_report += "#{duplicate_import_id_report_count} #{duplicate_import_id_report}"
         puts return_duplicate_import_id_report
       else
@@ -429,10 +413,12 @@ class PreCheckUtils
     puts "#{password_does_not_start_with_and_or_contain} password(s) do not start with and/or contain letters, numbers, underscores, dots or dashes." if password_does_not_start_with_and_or_contain > 0
     puts "#{login_length_does_not_fall_within_min_max} username(s) are either less than 3 characters or greater than 68 characters in length." if login_length_does_not_fall_within_min_max > 0
     puts "#{password_length_does_not_fall_within_min_max} password(s) are either less than 6 characters or greater than 40 characters in length." if password_length_does_not_fall_within_min_max > 0
+    
+    login_pwd_req_sum = login_length_does_not_fall_within_min_max + password_length_does_not_fall_within_min_max + password_does_not_start_with_and_or_contain + login_does_not_start_with_and_or_contain
+    @health_check += 5 if login_pwd_req_sum > 0
+    
     if login_contains_space_and_or_apostrophe > 0
-       puts "HEALTH CHECK VALUE PRIOR = #{@health_check}".bold.red
        @health_check += 10
-       puts "login space or apostrophe - NOW = #{@health_check}".bold.red
        puts ""
        puts "#{login_contains_space_and_or_apostrophe} logins that contain a space or apostrophe."
        puts users_csv_login_column_space_and_apostrophe_check_report
@@ -483,11 +469,7 @@ class PreCheckUtils
         end
       end
       if users_organization_id_no_match > 1
-        
-        puts "HEALTH CHECK VALUE PRIOR = #{@health_check}".bold.red
-        @health_check += 5
-        puts "users missing org id - NOW = #{@health_check}".bold.red
-        
+        @health_check += 5        
         unique_users_organization_id_not_found.each do | x, y|
           users_organization_id_not_found_report += "#{x.pink}, "
         end
@@ -542,9 +524,7 @@ class PreCheckUtils
         end
       end
       if classes_organization_id_no_match > 1
-        puts "HEALTH CHECK VALUE PRIOR = #{@health_check}".bold.red
         @health_check += 5
-        puts "classes missing org id - NOW = #{@health_check}".bold.red
         unique_classes_organization_id_not_found.each do | x, y|
           classes_organization_id_not_found_report += "#{x.pink}, "
         end
@@ -594,12 +574,13 @@ class PreCheckUtils
   end
   
   # display unique values after @ symbol to catch misspelled email addresses
-  def self.google_id_domain_split_list(import_dir, partial_import_switch)
+  def self.google_id_domain_split_list(import_dir, partial_import_switch, google_domain, google_domain1)
     if File.exists?("#{import_dir}/#{partial_import_switch}users.csv")
       unique_domain_split = {}
       domain_split_results = "The following are different domains being passed in the google_id column: \n"
       domain_split = CSV.read("#{import_dir}/#{partial_import_switch}users.csv")
       user_row_num = 1
+      google_domain_match = 0
       while user_row_num <= domain_split.size-1
         if domain_split[user_row_num][13].nil? || domain_split[user_row_num][13].empty?
         else
@@ -609,9 +590,16 @@ class PreCheckUtils
       end
       unique_domain_split.each do |x, y|
         domain_split_results += "#{x.pink}, "
+        google_domain_match += 1 if x != google_domain
+        google_domain_match += 1 if x != google_domain1
+      end
+      
+      if google_domain_match >0 
+        @health_check += 5
       end
       puts ""
       puts domain_split_results
+      puts google_domain_match
     end
   end
 
