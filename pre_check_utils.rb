@@ -178,6 +178,37 @@ class PreCheckUtils
     end
   end 
   
+  def self.google_third_domain_check(import_dir, file, google_domain2)
+    if google_domain2.empty?
+    else
+      user_row_count = CSV.read("#{import_dir}/#{file}")
+      user_row_num = 1
+      google_id_match = 0
+      google_id_nil = 0
+      google_id_no_match = 0
+      google_domain_report = "The following are the import_ids and rows that match your third domain #{google_domain2}: \n"
+      while user_row_num <= user_row_count.size-1
+        if user_row_count[user_row_num][13].nil? || user_row_count[user_row_num][13].empty?
+          google_id_nil +=1
+        elsif user_row_count[user_row_num][13].include?(google_domain2)
+          google_id_match += 1
+        else
+          google_id_no_match +=1
+        end 
+          user_row_num += 1
+      end
+      puts ""
+       if google_id_match ==0
+         @health_check += 10
+         puts " Google Email 3 Match - 10 ".bold.cyan.reverse_color
+       end
+      puts "Information regarding Google Domain #{google_domain2}".green
+      printf("%-10s | %10s | %10s | %14s\n", "total #", "# matched", "# no match", "# nil or empty")
+      printf("%-10s | %10s | %10s | %14s\n".bold.reverse_color, user_row_num-1, google_id_match, google_id_no_match, google_id_nil )
+      puts ""
+    end
+  end 
+  
   # compares teacher id values from the classes.csv file with the import ids in the users.csv file to see if the class and roster will fail
   def self.report_classes_csv_rows_with_no_teacher_in_users_csv(import_dir, partial_import_switch)
     if File.exists?("#{import_dir}/#{partial_import_switch}users.csv") && File.exists?("#{import_dir}/#{partial_import_switch}classes.csv")   
@@ -594,7 +625,7 @@ class PreCheckUtils
   end
   
   # display unique values after @ symbol to catch misspelled email addresses
-  def self.google_id_domain_split_list(import_dir, partial_import_switch, google_domain, google_domain1)
+  def self.google_id_domain_split_list(import_dir, partial_import_switch, google_domain, google_domain1, google_domain2)
     if File.exists?("#{import_dir}/#{partial_import_switch}users.csv")
       unique_domain_split = {}
       domain_split_results = "The following are different domains being passed in the google_id column: \n"
@@ -608,11 +639,19 @@ class PreCheckUtils
         end 
           user_row_num += 1
       end
+      
+      google_domain_list = {google_domain => true, google_domain1 => true, google_domain2 => true}
+      
       unique_domain_split.each do |x, y|
         domain_split_results += "#{x.pink}, "
-        google_domain_match += 1 if x != google_domain
-        google_domain_match += 1 if x != google_domain1
+        if google_domain_list.nil? || google_domain_list.empty?
+        elsif google_domain_list[x] 
+        else
+          google_domain_match += 1
+        end
       end
+      
+      
       
       if google_domain_match >0 
         @health_check += 5

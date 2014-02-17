@@ -7,6 +7,7 @@ load 'pre_check_utils.rb'
 @import_directory_path = ARGV[0].to_s
 @google_domain = ARGV[1].to_s
 @google_domain1 = ARGV[2].to_s
+@google_domain2 = ARGV[3].to_s
 PreCheckUtils.check_directory_contents_and_encoding(@import_directory_path)
 
 PreCheckUtils.intialize_health_check
@@ -56,9 +57,11 @@ csv_file_name_and_expected_column_count.each do |file, col|
     
     case file
       when "#{@partial_import_switch}users.csv"
-        PreCheckUtils.google_id_domain_split_list(@import_directory_path,@partial_import_switch, @google_domain, @google_domain1)
+        PreCheckUtils.google_id_domain_split_list(@import_directory_path,@partial_import_switch, @google_domain, @google_domain1, @google_domain2)
         PreCheckUtils.google_domain_check(@import_directory_path, file, @google_domain)
         PreCheckUtils.google_second_domain_check(@import_directory_path, file, @google_domain1)
+        #need to combine the google domain checks
+        PreCheckUtils.google_third_domain_check(@import_directory_path, file, @google_domain2)
         PreCheckUtils.user_type_count_by_category_for_users_csv(@import_directory_path,@partial_import_switch)
         @return_users_duplicate_import_id_report =  PreCheckUtils.duplicate_import_id_in_users_and_classes_csv(file,@import_directory_path)
         PreCheckUtils.users_csv_login_and_password_issue_check(file,@import_directory_path)
