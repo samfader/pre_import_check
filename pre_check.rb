@@ -10,6 +10,7 @@ load 'pre_check_utils.rb'
 PreCheckUtils.check_directory_contents_and_encoding(@import_directory_path)
 
 PreCheckUtils.intialize_health_check
+PreCheckUtils.intialize_issue_list
 
 # was unable to finish making the code below into a method
 # @partial_import_switch = ""
@@ -86,8 +87,10 @@ csv_file_name_and_expected_column_count.each do |file, col|
    end
 end
 
-puts PreCheckUtils.health_check
 health_check_results =  100-PreCheckUtils.health_check
+#issue_list = PreCheckUtils.intialize_issue_list
 puts " Import Health Status: #{health_check_results} ".bold.cyan.reverse_color
+#puts issue_list
+
 
  

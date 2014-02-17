@@ -52,6 +52,12 @@ class PreCheckUtils
   def self.health_check
     @health_check
   end
+  def self.intialize_issue_list
+    @issue_list = ""
+  end
+  def self.intialize_issue_list
+    @issue_list
+  end
   
   # counts the number of columns included in the file so that it can be used to compare against expected number of columns
   def self.count_number_of_columns_in_csv_file(file, col, import_dir)
@@ -68,6 +74,7 @@ class PreCheckUtils
       puts "You have more columns than expected, compare titles below.".cyan
     else
       @health_check += 10
+      puts " Column Count - 10 ".bold.cyan.reverse_color
       puts "You have less columns than expected, compare titles below.".yellow
     end
     rescue => er
@@ -129,6 +136,7 @@ class PreCheckUtils
       puts ""
        if google_id_match == 0
          @health_check += 10
+         puts " Google Email 1 Match - 10 ".bold.cyan.reverse_color
        end
       puts "Information regarding Google Domain #{google_domain}".green
       printf("%-10s | %10s | %10s | %14s\n", "total #", "# matched", "# no match", "# nil or empty")
@@ -161,6 +169,7 @@ class PreCheckUtils
       puts ""
        if google_id_match ==0
          @health_check += 10
+         puts " Google Email 2 Match - 10 ".bold.cyan.reverse_color
        end
       puts "Information regarding Google Domain #{google_domain1}".green
       printf("%-10s | %10s | %10s | %14s\n", "total #", "# matched", "# no match", "# nil or empty")
@@ -200,6 +209,7 @@ class PreCheckUtils
       end
       if teacher_import_id_no_match > 1
         @health_check += 10
+        puts " Class missing teacher - 10 ".bold.cyan.reverse_color
         unique_class_teacher_id_not_found.each do | x, y|
           class_teacher_id_not_found_report += "#{x.pink}, "
         end
@@ -247,6 +257,7 @@ class PreCheckUtils
       end
       if roster_class_id_no_match > 1
         @health_check += 5
+        puts " Roster, no class in classes.csv - 5 ".bold.cyan.reverse_color
         unique_roster_class_id_not_found.each do | x, y|
           roster_class_id_not_found_report += "#{x.pink}, "
         end
@@ -296,6 +307,7 @@ class PreCheckUtils
       end
       if roster_user_id_no_match > 1 #value of 1 until I can figure out how to stop showing the column title
         @health_check += 5
+        puts " Roster, no user in users.csv - 5 ".bold.cyan.reverse_color
         unique_roster_class_id_not_found.each do | x, y|
           roster_class_id_not_found_report += "#{x.pink}, "
         end
@@ -344,6 +356,7 @@ class PreCheckUtils
       end 
       if duplicate_import_id_report_count > 1
         @health_check += 5
+        puts " Duplicate import ids - 5 ".bold.cyan.reverse_color
         return_duplicate_import_id_report += "#{duplicate_import_id_report_count} #{duplicate_import_id_report}"
         puts return_duplicate_import_id_report
       else
@@ -415,10 +428,15 @@ class PreCheckUtils
     puts "#{password_length_does_not_fall_within_min_max} password(s) are either less than 6 characters or greater than 40 characters in length." if password_length_does_not_fall_within_min_max > 0
     
     login_pwd_req_sum = login_length_does_not_fall_within_min_max + password_length_does_not_fall_within_min_max + password_does_not_start_with_and_or_contain + login_does_not_start_with_and_or_contain
-    @health_check += 5 if login_pwd_req_sum > 0
+    if login_pwd_req_sum > 0
+      @health_check += 5 
+      puts " Login/pwd reqs - 5 ".bold.cyan.reverse_color
+      puts ""
+    end
     
     if login_contains_space_and_or_apostrophe > 0
        @health_check += 10
+       puts " login no space or ' - 10 ".bold.cyan.reverse_color
        puts ""
        puts "#{login_contains_space_and_or_apostrophe} logins that contain a space or apostrophe."
        puts users_csv_login_column_space_and_apostrophe_check_report
@@ -469,7 +487,8 @@ class PreCheckUtils
         end
       end
       if users_organization_id_no_match > 1
-        @health_check += 5        
+        @health_check += 5
+        puts " org id match users.csv - 5 ".bold.cyan.reverse_color
         unique_users_organization_id_not_found.each do | x, y|
           users_organization_id_not_found_report += "#{x.pink}, "
         end
@@ -525,6 +544,7 @@ class PreCheckUtils
       end
       if classes_organization_id_no_match > 1
         @health_check += 5
+        puts " org id match classes.csv - 5 ".bold.cyan.reverse_color
         unique_classes_organization_id_not_found.each do | x, y|
           classes_organization_id_not_found_report += "#{x.pink}, "
         end
@@ -596,10 +616,10 @@ class PreCheckUtils
       
       if google_domain_match >0 
         @health_check += 5
+        puts " Google domain match - 5 ".bold.cyan.reverse_color
       end
       puts ""
       puts domain_split_results
-      puts google_domain_match
     end
   end
 
