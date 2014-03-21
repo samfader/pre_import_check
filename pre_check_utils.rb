@@ -635,7 +635,7 @@ class PreCheckUtils
       while user_row_num <= domain_split.size-1
         if domain_split[user_row_num][13].nil? || domain_split[user_row_num][13].empty?
         else
-          unique_domain_split[domain_split[user_row_num][13].split('@').last] = true
+          unique_domain_split[domain_split[user_row_num][13].split('@').last.downcase] = true
         end 
           user_row_num += 1
       end
